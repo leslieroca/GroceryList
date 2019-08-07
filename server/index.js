@@ -19,15 +19,18 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const app = express();
 const port = 3000;
 
 const sqlite3= require('sqlite3').verbose();
-const db = new sqlite3.Database('items.db');
+const db = new sqlite3.Database('item.db');
 
 //automaticly will read the data
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+app.use(cors());
 
 
 app.listen(port, () => {
@@ -44,35 +47,32 @@ var items = [
 ];
 
 app.get('/items', (req, res) => {
-  res.send(null)});
+  db.all('select * from items', (err, items) => {
+  
+    if (err) {
+      res.status(400).end();
+    }else {
+      res.send(items);
+    }
+  })
+  console.log(items)
+  
+});
 
 
 app.post('/items', (req, res) => {
-  var newItem = req.body;
-  items.push(newItem);
-  res.send(newItem);
+  var newItems = req.body;
+  db.run('insert into items (values(?,?)', newItems.name, newItems.qty, (err) => {
+    if (err) {
+      res.status(400).end();
+    }else {
+    res.send(newItems);
+    }
+  })
 });
 
-db.serialize(function() {
-  
-  db.run('insert into items (values(?,?)', req.body.name, req.body,qty ));
- 
-  var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
-  for (var i = 0; i < 10; i++) {
-      stmt.run("Ipsum " + i);
-  }
-  // if (request.method === 'POST') {
-  //   if (items.name === undefined) {
-  //     item.name = item.qty;
-  //     res.end();
-  //   }
-  // }
-  
 
-
-  // let data = '';
-  // req.on('data', chunk =>
 
 //Read (cRud) - all
 //app.get('/items/:', () => {
-//});
+//})

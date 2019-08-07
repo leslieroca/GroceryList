@@ -6,12 +6,16 @@ class GroceryList extends React.Component {
   }
 
   render() {
-    return (
-      <div className="groceries">
-        {//this.props.item.map((item) => <GroceryItems item={item} />)
-        }
-      </div>
-    );
+    const groceryItems = this.props.groceries.map(item => {
+      const { name, quantity } = item;
+      return (
+        <li key={name}>
+          <span>{name + ' '}</span>
+          <span>{quantity}</span>
+        </li>
+      );
+    });
+    return <ul className="groceries">{groceryItems}</ul>;
   }
 }
 

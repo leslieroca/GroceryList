@@ -21,12 +21,25 @@ class App extends React.Component {
     }
   }
 
+  componentDedMount() {
+    $.ajax({
+      ur: 'http://localhost:300/items', 
+      mothod: 'GET',
+      success: (data) => {
+        this.setState({
+          groceries: data
+        });
+      }
+    });
+  }
+
   render() {
+    const{ groceries } = this.state;
     return (
       <div className="groceries">
         <GroceryItems />
         <AddGrocery onAdd={this.handleAdd.bind(this)}/>
-        {/* <GroceryList  item={}/> */}
+        <GroceryList groceries={groceries}/>
       </div>
     );
   }
